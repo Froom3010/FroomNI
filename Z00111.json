@@ -1,0 +1,24 @@
+{
+  "practice": "Z00111 – Dr McKenna's Practice",
+  "members": [
+    { "id": "d1", "name": "dr conor mckenna", "role": "gp", "location": "Room 1" },
+    { "id": "d2", "name": "dr aisling murphy", "role": "gp", "location": "Room 2" },
+    { "id": "d3", "name": "dr patrick hughes", "role": "gp", "location": "Room 3" },
+    { "id": "d4", "name": "dr orlaith kelly", "role": "gp", "location": "Room 4" },
+    { "id": "d5", "name": "dr declan byrne", "role": "gp", "location": "Room 5" },
+    { "id": "d6", "name": "dr niamh quinn", "role": "gp", "location": "Room 6" },
+    { "id": "d7", "name": "dr eoin mcgrath", "role": "gp", "location": "Room 7" },
+    { "id": "d8", "name": "dr siobhan walsh", "role": "gp", "location": "Room 8" },
+    { "id": "d9", "name": "dr ciaran maguire", "role": "gp", "location": "Room 9" },
+    { "id": "d10", "name": "dr aoife o'donnell", "role": "gp", "location": "Room 10" },
+    { "id": "d11", "name": "dr fiona mccabe", "role": "gp", "location": "Room 11" },
+    { "id": "d12", "name": "dr michael donnelly", "role": "gp", "location": "Room 12" },
+    { "id": "d13", "name": "dr laura mccartney", "role": "gp", "location": "Room 13" },
+    { "id": "s1", "name": "mary reception", "role": "reception", "location": "Front Desk" },
+    { "id": "s2", "name": "sarah reception", "role": "reception", "location": "Front Desk" },
+    { "id": "s3", "name": "james admin", "role": "admin", "location": "Office" },
+    { "id": "s4", "name": "emma nurse", "role": "nurse", "location": "Treatment Room" },
+    { "id": "s5", "name": "peter practice manager", "role": "manager", "location": "Office" },
+    { "id": "s6", "name": "claire nurse", "role": "nurse", "location": "Treatment Room" }
+  ]
+}
