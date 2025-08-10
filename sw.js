@@ -1,15 +1,3 @@
-const CONFIG_BASE = './';
-
-// Try to fetch a practice config JSON (e.g., Z00085.json in repo root)
-async function fetchConfig(practiceCode){
-  try{
-    const res = await fetch(`${CONFIG_BASE}${practiceCode}.json`, {cache:'no-cache'});
-    if(!res.ok) return null;
-    const cfg = await res.json();
-    return cfg;
-  }catch(e){ return null; }
-}
-
 const CACHE_NAME = 'froom-pwa-v1';
 const ASSETS = [
   './',
