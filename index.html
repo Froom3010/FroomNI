@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Froom — Team Room Status</title>
+  <meta name="theme-color" content="#6ea8fe">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+  <style>
+    :root{
+      --bg:#0f1116; --bg2:#0b0d14;
+      --card:#151823; --cardSub:#1a1f2e;
+      --text:#eef1f7; --muted:#9aa4bf;
+      --primary:#6ea8fe; --border:#22283a;
+      --green:#2bd67b; --amber:#ffbe55; --red:#ff5d5d;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:14px; --radiusSm:10px;
+      --space:16px; --spaceSm:12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--text);
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:linear-gradient(180deg,#0e1117,#0f121a 40%,var(--bg2));
+      background-attachment:fixed;
+    }
+    h1,h2,h3{margin:0 0 8px 0}
+    h2{font-size:22px} h3{font-size:18px}
+    p{margin:0}
+    .view{display:none; padding:var(--space); max-width:760px; margin:0 auto}
+    .view.active{display:block; animation:fade .18s ease-out}
+    @keyframes fade{from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none}}
+    .card{background:var(--card); border:1px solid var(--border);
+      border-radius:var(--radius); padding:var(--spaceSm); box-shadow:var(--shadow); margin-bottom:var(--spaceSm)}
+    .card.subtle{background:var(--cardSub)}
+    input,select{width:100%; padding:12px; border-radius:var(--radiusSm);
+      border:1px solid var(--border); background:#0c0f16; color:var(--text)}
+    label{display:block; font-size:14px; margin:10px 0}
+    button{border:none; border-radius:12px; padding:12px 14px; color:#fff;
+      background:var(--cardSub); box-shadow:var(--shadow); font-weight:600; transition:transform .12s ease}
+    button:active{transform:scale(.98)}
+    button.primary{background:var(--primary)} button.ghost{background:transparent; border:1px solid var(--border)}
+    button.sm{padding:8px 10px; font-size:13px} button.wide{width:100%} button.grow{flex:1}
+    .row{display:flex; gap:8px; align-items:center}
+    .hint{color:var(--muted); font-size:12px}
+    .app-header,.app-footer{padding:12px 16px; display:flex; align-items:center; justify-content:space-between}
+    .app-footer{justify-content:center}
+    .brand{display:flex; gap:10px; align-items:center}
+    .logo{width:36px;height:36px}
+    .brand-text h1{font-size:18px}
+    .brand-text p{color:var(--muted); font-size:12px}
+    .toolbar{display:flex; gap:8px; margin:8px 0 12px 0}
+    .toolbar.sticky{position:sticky; top:0; background:linear-gradient(180deg,rgba(15,17,22,.9),rgba(15,17,22,.6)); backdrop-filter:blur(10px); padding:8px; border-bottom:1px solid var(--border); z-index:2}
+    .searchWrap{position:relative; flex:1}
+    .searchWrap .icon{position:absolute; left:10px; top:10px; opacity:.7}
+    .searchWrap input{padding-left:32px}
+    .list{list-style:none; padding:0; margin:0; display:grid; gap:8px}
+    .list li{background:var(--card); border:1px solid var(--border); border-radius:12px;
+      padding:12px; display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .itemLeft{display:flex; gap:10px; align-items:center}
+    .avatar{width:34px; height:34px; border-radius:50%; background:#10131b; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-weight:700}
+    .name{font-weight:700}
+    .sub{color:var(--muted); font-size:12px}
+    .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px; font-size:12px; font-weight:700; background:#10131b; border:1px solid var(--border)}
+    .badge .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+    .badge.free{border-color:#0c2b1d}.badge.busy{border-color:#2b2510}.badge.dnd{border-color:#2b1010}
+    .badge.pulse{animation:pulse .5s ease}
+    @keyframes pulse{0%{transform:scale(.96)} 100%{transform:scale(1)}}
+    .star{opacity:.7; font-size:18px}
+    .star.active{opacity:1}
+    .room-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
+    .meTop{display:flex; align-items:center; gap:10px}
+    .traffic{display:flex; gap:8px; margin:10px 0 12px 0}
+    .light{flex:1; display:flex; gap:8px; align-items:center; justify-content:center; background:#0c0f16; border:1px solid var(--border)}
+    .lamp{width:14px;height:14px;border-radius:50%;display:inline-block;box-shadow:0 0 14px rgba(0,0,0,.4) inset}
+    .lamp.green{background:var(--green)} .lamp.amber{background:var(--amber)} .lamp.red{background:var(--red)}
+    .presets{display:flex; gap:8px; flex-wrap:wrap; margin:4px 0 8px 0}
+    .chip{padding:8px 10px; border-radius:999px; border:1px solid var(--border); background:#0c0f16; font-size:13px}
+    .tabbar{position:sticky; bottom:0; display:flex; gap:8px; padding:8px; background:rgba(8,10,15,.7); backdrop-filter:blur(12px); border-top:1px solid var(--border)}
+    .tabbar button{flex:1}
+    .empty{display:grid; place-items:center; padding:24px; color:var(--muted)}
+    .subtle{background:var(--cardSub)}
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 256 256" class="logo" aria-hidden="true">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7af0b2"/><stop offset="1" stop-color="#6ea8fe"/></linearGradient></defs>
+        <rect width="256" height="256" rx="56" fill="#0f1116"/>
+        <g transform="translate(28,28)">
+          <circle cx="48" cy="100" r="16" fill="#2bd67b"/><circle cx="100" cy="100" r="16" fill="#ffbe55"/><circle cx="152" cy="100" r="16" fill="#ff5d5d"/>
+          <rect x="20" y="40" width="168" height="120" rx="18" fill="none" stroke="url(#g)" stroke-width="10"/>
+        </g>
+      </svg>
+      <div class="brand-text"><h1>Froom</h1><p>Team status</p></div>
+    </div>
+    <button id="btnLogout" class="ghost sm" style="display:none;">Logout</button>
+  </header>
+
+  <main id="viewLogin" class="view active" role="main" aria-label="Login">
+    <h2>Sign in</h2>
+    <form id="loginForm" class="card">
+      <label>Practice Code
+        <input id="practiceCode" placeholder="e.g. DOW123" required>
+      </label>
+      <label>Name (display name)
+        <input id="username" placeholder="e.g. dr quinn / mary reception" required>
+      </label>
+      <label>Password
+        <input type="password" id="password" placeholder="••••••••" required>
+      </label>
+      <button class="primary wide">Sign in</button>
+      <p class="hint">Demo → code <code>DOW123</code> • password <code>pass123</code> • users <code>dr quinn</code>, <code>dr maguire</code>, <code>mary reception</code>, <code>sarah reception</code></p>
+    </form>
+  </main>
+
+  <main id="viewOverview" class="view" role="main" aria-label="Team Overview">
+    <h2>Team overview</h2>
+    <div class="toolbar sticky">
+      <div class="searchWrap">
+        <span class="icon" aria-hidden="true">🔎</span>
+        <input id="memberSearch" type="search" placeholder="Search name or location…" aria-label="Search members">
+      </div>
+      <select id="statusFilter" aria-label="Filter by status">
+        <option value="">All</option><option value="free">Free</option><option value="busy">Busy</option><option value="dnd">Do Not Disturb</option>
+      </select>
+    </div>
+    <ul id="membersList" class="list" aria-live="polite"></ul>
+    <div id="emptyState" class="empty" hidden>
+      <p>No matches. Try clearing filters.</p>
+    </div>
+  </main>
+
+  <main id="viewMyStatus" class="view" role="main" aria-label="My status">
+    <h2>My status</h2>
+    <section class="card" id="meCard">
+      <div class="room-head">
+        <div class="meTop">
+          <div class="avatar" id="meAvatar" aria-hidden="true"></div>
+          <div>
+            <h3 id="meName">Name</h3>
+            <p class="muted"><span id="meLocation">—</span> • <span id="meActive">active now</span></p>
+          </div>
+        </div>
+        <span id="meBadge" class="badge" aria-live="polite"></span>
+      </div>
+
+      <div class="presets">
+        <button class="chip" data-preset='{"status":"free","note":"In clinic"}'>In clinic</button>
+        <button class="chip" data-preset='{"status":"busy","note":"On calls"}'>On calls</button>
+        <button class="chip" data-preset='{"status":"dnd","note":"On break"}'>Break</button>
+      </div>
+
+      <label>Location (e.g. Room 1, Front Desk)
+        <input id="meLocationInput" placeholder="e.g. Room 1">
+      </label>
+
+      <div class="traffic">
+        <button class="light" data-status="free" aria-label="Set status Free"><span class="lamp green"></span><span>Free</span></button>
+        <button class="light" data-status="busy" aria-label="Set status Busy"><span class="lamp amber"></span><span>Busy</span></button>
+        <button class="light" data-status="dnd" aria-label="Set status Do Not Disturb"><span class="lamp red"></span><span>Do Not Disturb</span></button>
+      </div>
+
+      <label>Note
+        <input id="meNote" placeholder="e.g. With patient until 15:30">
+      </label>
+      <div class="row">
+        <button id="btnSave" class="primary grow">Save</button>
+        <button id="btnClear" class="ghost sm">Clear note</button>
+      </div>
+    </section>
+  </main>
+
+  <main id="viewActivity" class="view" role="main" aria-label="Activity">
+    <h2>Activity</h2>
+    <ul id="activityList" class="list activity"></ul>
+    <div class="empty subtle" id="activityEmpty"><p>No activity yet.</p></div>
+  </main>
+
+  <nav class="tabbar" id="tabbar" style="display:none;">
+    <button data-target="viewOverview" id="tabOverview" class="primary">Overview</button>
+    <button data-target="viewMyStatus" id="tabMy">My Status</button>
+    <button data-target="viewActivity" id="tabActivity">Activity</button>
+  </nav>
+
+  <footer class="app-footer"><p class="muted">Demo build • v0.4 (PWA)</p></footer>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(()=>{});
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const $ = (s)=>document.querySelector(s);
+      const $$ = (s)=>Array.from(document.querySelectorAll(s));
+      const vibrate = (ms)=>('vibrate' in navigator)? navigator.vibrate(ms):null;
+
+      const views = {
+        login:$('#viewLogin'),
+        overview:$('#viewOverview'),
+        me:$('#viewMyStatus'),
+        activity:$('#viewActivity'),
+      };
+      const tabbar = $('#tabbar'), btnLogout = $('#btnLogout');
+
+      const VALID_PRACTICE = 'DOW123';
+      const DEMO_PASSWORD = 'pass123';
+      const DEMO_MEMBERS = [
+        { id:'u1', name:'dr quinn',    location:'Room 1',      status:'free', note:'', fav:true,  lastActive:Date.now()-60_000 },
+        { id:'u2', name:'dr maguire',  location:'Room 2',      status:'busy', note:'With patient', fav:false, lastActive:Date.now()-6*60_000 },
+        { id:'u3', name:'mary reception',  location:'Front Desk', status:'free', note:'', fav:true,  lastActive:Date.now()-30_000 },
+        { id:'u4', name:'sarah reception', location:'Front Desk', status:'dnd',  note:'On calls', fav:false, lastActive:Date.now()-15*60_000 },
+      ];
+
+      const state = { practice:null, meId:null, members:[], activity:[] };
+
+      const keyMembers = (p)=>`froom:${p}:members`;
+      const keyActivity = (p)=>`froom:${p}:activity`;
+
+      const load = (p)=>{
+        const m = localStorage.getItem(keyMembers(p));
+        state.members = m ? JSON.parse(m) : DEMO_MEMBERS.map(x=>({...x}));
+        const a = localStorage.getItem(keyActivity(p));
+        state.activity = a ? JSON.parse(a) : [];
+      };
+      const saveMembers = ()=> localStorage.setItem(keyMembers(state.practice), JSON.stringify(state.members));
+      const saveActivity = ()=> localStorage.setItem(keyActivity(state.practice), JSON.stringify(state.activity.slice(-50)));
+
+      const me = ()=> state.members.find(x=>x.id===state.meId);
+
+      function switchView(name){
+        Object.values(views).forEach(v=>v.classList.remove('active'));
+        views[name].classList.add('active');
+        const signedIn = !!state.meId;
+        tabbar.style.display = signedIn ? 'flex' : 'none';
+        btnLogout.style.display = signedIn ? 'inline-flex' : 'none';
+      }
+
+      const fmtAgo = (ts)=>{
+        const s = Math.max(0, Math.floor((Date.now()-ts)/1000));
+        if(s<60) return `${s}s ago`;
+        const m = Math.floor(s/60); if(m<60) return `${m}m ago`;
+        const h = Math.floor(m/60); return `${h}h ago`;
+      };
+
+      const initials = (name)=>{
+        const parts = name.split(' ').filter(Boolean);
+        const letters = (parts[0]?.[0]||'') + (parts[1]?.[0]||'');
+        return letters.toUpperCase();
+      };
+
+      const badge = (status, pulse=false)=>{
+        const span=document.createElement('span'); span.className=`badge ${status} ${pulse?'pulse':''}`;
+        const dot=document.createElement('span'); dot.className='dot';
+        dot.style.background = status==='free'?'var(--green)':status==='busy'?'var(--amber)':'var(--red)';
+        const text=document.createElement('span'); text.textContent =
+          status==='free'?'✓ Free':status==='busy'?'• Busy':'⛔ DND';
+        span.append(dot,text); return span;
+      };
+
+      function renderOverview(){
+        const ul=$('#membersList'); ul.innerHTML='';
+        const q=($('#memberSearch').value||'').toLowerCase();
+        const filt=$('#statusFilter').value;
+
+        const sorted = state.members.slice().sort((a,b)=>{
+          if(a.fav!==b.fav) return a.fav?-1:1;
+          return a.name.localeCompare(b.name);
+        });
+
+        let shown = 0;
+        sorted
+          .filter(m=>!filt || m.status===filt)
+          .filter(m=>!q || m.name.toLowerCase().includes(q) || (m.location||'').toLowerCase().includes(q))
+          .forEach(m=>{
+            shown++;
+            const li=document.createElement('li');
+
+            const left=document.createElement('div');
+            left.className='itemLeft';
+            const av=document.createElement('div'); av.className='avatar'; av.textContent=initials(m.name);
+            const meta=document.createElement('div');
+            const name=document.createElement('div'); name.className='name'; name.textContent=m.name;
+            const sub=document.createElement('div'); sub.className='sub';
+            sub.textContent = `${m.location||''}${m.location&&m.note?' • ':''}${m.note||''}${m.lastActive? ' • active '+fmtAgo(m.lastActive):''}`;
+            meta.append(name,sub);
+            left.append(av,meta);
+
+            const right=document.createElement('div');
+            const star=document.createElement('button');
+            star.className=`ghost sm star ${m.fav?'active':''}`; star.textContent='⭐';
+            star.addEventListener('click', (e)=>{ e.stopPropagation(); m.fav=!m.fav; saveMembers(); renderOverview(); });
+            const chip=badge(m.status);
+            right.style.display='flex'; right.style.gap='8px'; right.append(chip,star);
+
+            li.append(left,right);
+            ul.append(li);
+          });
+
+        $('#emptyState').hidden = shown>0;
+      }
+
+      function renderMe(pulse=false){
+        const mine = me(); if(!mine) return;
+        $('#meName').textContent = mine.name;
+        $('#meLocation').textContent = mine.location||'';
+        $('#meActive').textContent = 'active '+fmtAgo(mine.lastActive||Date.now());
+        const b=$('#meBadge'); b.className='badge'; b.textContent=''; b.append(badge(mine.status, pulse));
+        $('#meLocationInput').value = mine.location||'';
+        $('#meNote').value = mine.note||'';
+        $('#meAvatar').textContent = initials(mine.name);
+        Array.from(document.querySelectorAll('.light')).forEach(btn=>{
+          btn.style.outline = btn.dataset.status===mine.status ? '2px solid var(--primary)' : 'none';
+        });
+      }
+
+      function logActivity(msg){
+        state.activity.push({ id:Date.now()+Math.random(), ts:Date.now(), msg });
+        saveActivity(); renderActivity();
+      }
+
+      function renderActivity(){
+        const ul = $('#activityList'); ul.innerHTML='';
+        if(state.activity.length===0){ $('#activityEmpty').style.display='grid'; return; }
+        $('#activityEmpty').style.display='none';
+        state.activity.slice().reverse().forEach(ev=>{
+          const li=document.createElement('li');
+          const left=document.createElement('div'); left.className='itemLeft';
+          const av=document.createElement('div'); av.className='avatar'; av.textContent='⏱';
+          const meta=document.createElement('div');
+          const name=document.createElement('div'); name.className='name'; name.textContent=ev.msg;
+          const sub=document.createElement('div'); sub.className='sub'; sub.textContent=new Date(ev.ts).toLocaleTimeString();
+          meta.append(name,sub); left.append(av,meta); li.append(left); ul.append(li);
+        });
+      }
+
+      Array.from(document.querySelectorAll('#tabbar button')).forEach(btn=>btn.addEventListener('click',()=>{
+        const t = btn.dataset.target;
+        Object.values(views).forEach(v=>v.classList.remove('active'));
+        document.getElementById(t).classList.add('active');
+        Array.from(document.querySelectorAll('#tabbar button')).forEach(b=>b.classList.remove('primary'));
+        btn.classList.add('primary');
+        if(t==='viewOverview') renderOverview();
+        if(t==='viewMyStatus') renderMe();
+        if(t==='viewActivity') renderActivity();
+      }));
+
+      document.getElementById('loginForm').addEventListener('submit',(e)=>{
+        e.preventDefault();
+        const practice = document.getElementById('practiceCode').value.trim().toUpperCase();
+        const user = document.getElementById('username').value.trim().toLowerCase();
+        const pass = document.getElementById('password').value;
+        if(practice!==VALID_PRACTICE || pass!==DEMO_PASSWORD){
+          alert('Access denied — check practice code and password.'); return;
+        }
+        state.practice=practice; load(practice);
+
+        let m = state.members.find(x=>x.name.toLowerCase()===user);
+        if(!m){ m={ id:'u'+Date.now(), name:user, location:'', status:'free', note:'', fav:false, lastActive:Date.now() }; state.members.push(m); saveMembers(); }
+        state.meId=m.id;
+
+        switchView('overview'); renderOverview();
+      });
+
+      document.getElementById('memberSearch').addEventListener('input', renderOverview);
+      document.getElementById('statusFilter').addEventListener('change', renderOverview);
+
+      Array.from(document.querySelectorAll('.light')).forEach(btn=>btn.addEventListener('click',()=>{
+        const mine = me(); if(!mine) return;
+        mine.status = btn.dataset.status;
+        mine.lastActive = Date.now();
+        saveMembers(); renderMe(true); renderOverview();
+        vibrate(15);
+        logActivity(`${mine.name} set status to ${mine.status.toUpperCase()}`);
+      }));
+      document.getElementById('btnSave').addEventListener('click',()=>{
+        const mine=me(); if(!mine) return;
+        mine.location = document.getElementById('meLocationInput').value.trim();
+        mine.note = document.getElementById('meNote').value.trim();
+        mine.lastActive = Date.now();
+        saveMembers(); renderMe(); renderOverview();
+        logActivity(`${mine.name} updated details`);
+      });
+      document.getElementById('btnClear').addEventListener('click',()=>document.getElementById('meNote').value='');
+
+      Array.from(document.querySelectorAll('.chip')).forEach(chip=>chip.addEventListener('click',()=>{
+        const mine=me(); if(!mine) return;
+        const preset = JSON.parse(chip.dataset.preset);
+        mine.status = preset.status; mine.note = preset.note; mine.lastActive=Date.now();
+        saveMembers(); renderMe(true); renderOverview();
+        vibrate(10);
+        logActivity(`${mine.name} → ${mine.status.toUpperCase()} (${mine.note})`);
+      }));
+
+      btnLogout.addEventListener('click',()=>{ state.meId=null; state.practice=null; switchView('login'); });
+
+      setInterval(()=>{ if(state.meId){ renderMe(); renderOverview(); } }, 30_000);
+
+      switchView('login');
+    });
+  </script>
+</body>
+</html>
