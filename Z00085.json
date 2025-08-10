@@ -1,0 +1,111 @@
+{
+  "practiceCode": "Z00085",
+  "practiceName": "Duncairn Medical Centre",
+  "members": [
+    {
+      "id": "gp1",
+      "name": "dr aisling murphy",
+      "role": "gp",
+      "location": "Room 1",
+      "fav": true
+    },
+    {
+      "id": "gp2",
+      "name": "dr conor mckenna",
+      "role": "gp",
+      "location": "Room 2",
+      "fav": true
+    },
+    {
+      "id": "gp3",
+      "name": "dr niamh o’donnell",
+      "role": "gp",
+      "location": "Room 3",
+      "fav": false
+    },
+    {
+      "id": "gp4",
+      "name": "dr patrick kelly",
+      "role": "gp",
+      "location": "Room 4",
+      "fav": false
+    },
+    {
+      "id": "gp5",
+      "name": "dr siobhan byrne",
+      "role": "gp",
+      "location": "Room 5",
+      "fav": false
+    },
+    {
+      "id": "gp6",
+      "name": "dr eoin mcgrath",
+      "role": "gp",
+      "location": "Room 6",
+      "fav": false
+    },
+    {
+      "id": "gp7",
+      "name": "dr orlaith hughes",
+      "role": "gp",
+      "location": "Room 7",
+      "fav": false
+    },
+    {
+      "id": "gp8",
+      "name": "dr declan walsh",
+      "role": "gp",
+      "location": "Room 8",
+      "fav": false
+    },
+    {
+      "id": "gp9",
+      "name": "dr ciaran mcbride",
+      "role": "gp",
+      "location": "Room 9",
+      "fav": false
+    },
+    {
+      "id": "gp10",
+      "name": "dr aoife quinn",
+      "role": "gp",
+      "location": "Room 10",
+      "fav": true
+    },
+    {
+      "id": "st1",
+      "name": "mary reception",
+      "role": "reception",
+      "location": "Front Desk",
+      "fav": true
+    },
+    {
+      "id": "st2",
+      "name": "sarah reception",
+      "role": "reception",
+      "location": "Front Desk",
+      "fav": false
+    },
+    {
+      "id": "st3",
+      "name": "james admin",
+      "role": "admin",
+      "location": "Office",
+      "fav": false
+    },
+    {
+      "id": "st4",
+      "name": "laura nurse",
+      "role": "nurse",
+      "location": "Treatment",
+      "fav": false
+    },
+    {
+      "id": "st5",
+      "name": "peter practice manager",
+      "role": "manager",
+      "location": "Office",
+      "fav": true
+    }
+  ]
+}
