@@ -2,12 +2,12 @@
 
 // 1) Firebase init — paste your config:
 const firebaseConfig = {
-  apiKey: "PASTE",
-  authDomain: "PASTE.firebaseapp.com",
-  projectId: "PASTE",
-  storageBucket: "PASTE.appspot.com",
-  messagingSenderId: "PASTE",
-  appId: "PASTE"
+  apiKey: "AIzaSyCzP19H__YXWhap30SCDC4_volJz-erwt0",
+  authDomain: "froomtest-d83f3.firebaseapp.com",
+  projectId: "froomtest-d83f3",
+  storageBucket: "froomtest-d83f3.firebasestorage.app",
+  messagingSenderId: "313030534473",
+  appId: "1:313030534473:web:180fa6e5856a9011702698"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
