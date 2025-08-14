@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Seeder</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #111; color: #fff; }
+    input, button { margin: 5px 0; padding: 8px; width: 100%; }
+    button { background: #28a745; color: white; border: none; cursor: pointer; }
+    button:hover { background: #218838; }
+    .section { margin-bottom: 20px; padding: 15px; background: #222; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+<h1>Seed demo practices + members</h1>
+
+<div class="section">
+  <h3>1) Paste Firebase Config Fields</h3>
+  <input id="apiKey" placeholder="apiKey">
+  <input id="authDomain" placeholder="authDomain">
+  <input id="projectId" placeholder="projectId">
+  <input id="storageBucket" placeholder="storageBucket">
+  <input id="messagingSenderId" placeholder="messagingSenderId">
+  <input id="appId" placeholder="appId">
+  <button onclick="initFirebase()">Initialise</button>
+</div>
+
+<div class="section">
+  <h3>2) Sign in anonymously</h3>
+  <button onclick="signInAnon()">Sign in anon</button>
+</div>
+
+<div class="section">
+  <h3>3) Create 2 practices + sample members</h3>
+  <button onclick="seedData()">Seed now</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+  let db;
+
+  function initFirebase() {
+    const config = {
+      apiKey: document.getElementById('apiKey').value,
+      authDomain: document.getElementById('authDomain').value,
+      projectId: document.getElementById('projectId').value,
+      storageBucket: document.getElementById('storageBucket').value,
+      messagingSenderId: document.getElementById('messagingSenderId').value,
+      appId: document.getElementById('appId').value
+    };
+    firebase.initializeApp(config);
+    db = firebase.firestore();
+    alert("Firebase initialised!");
+  }
+
+  function signInAnon() {
+    firebase.auth().signInAnonymously()
+      .then(() => alert("Signed in anonymously"))
+      .catch(e => alert(e.message));
+  }
+
+  async function seedData() {
+    if (!db) return alert("Firebase not initialised!");
+
+    const practices = [
+      {
+        code: "Z90001",
+        name: "Greenway Practice",
+        members: [
+          { name: "Alice Smith", role: "GP", status: "free" },
+          { name: "John Kerr", role: "GP", status: "busy" },
+          { name: "Mary McGee", role: "Reception", status: "free" }
+        ]
+      },
+      {
+        code: "Z90002",
+        name: "Harbour Medical Centre",
+        members: [
+          { name: "Paul Hughes", role: "GP", status: "free" },
+          { name: "Kevin Brown", role: "Nurse", status: "busy" },
+          { name: "Helen Walsh", role: "Manager", status: "free" }
+        ]
+      }
+    ];
+
+    for (const p of practices) {
+      await db.collection("practices").doc(p.code).set({
+        name: p.name,
+        created: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      for (const m of p.members) {
+        await db.collection("practices").doc(p.code).collection("members").add({
+          name: m.name,
+          role: m.role,
+          status: m.status,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    }
+    alert("Seeding complete!");
+  }
+</script>
+
+</body>
+</html>
