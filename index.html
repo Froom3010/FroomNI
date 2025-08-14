@@ -1,155 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>FroomNI — Team Room Status</title>
-  <meta name="theme-color" content="#0b0d12">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="apple-touch-icon-180.png">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .app { max-width: 1100px; margin: 0 auto; padding: 16px; }
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 18px 0}
-    .brand{display:flex;gap:10px;align-items:center}
-    .brand h1{margin:0;font-size:22px}
-    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#2ee59d,#4ea8ff);display:grid;place-items:center}
-    .logo svg{width:20px;height:20px}
-    .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#0e1424;color:var(--muted);font-size:12px}
-    .panel{background:linear-gradient(180deg,#0f1322,#0c101c);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);}
-    .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .grid{display:grid;gap:12px}
-    @media(min-width:720px){.grid.cols-2{grid-template-columns:1fr 1fr}}
-    @media(min-width:1120px){.grid.cols-3{grid-template-columns:1fr 1fr 1fr}}
-    .item{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:14px;background:#0e1220}
-    .avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#131a2c;color:#cdd6e5;font-weight:700}
-    .statusDot{width:10px;height:10px;border-radius:50%;background:#34c759;box-shadow:0 0 8px #34c759}
-    .dot-busy{background:#ff4d4f;box-shadow:0 0 8px #ff4d4f}
-    .dot-dnd{background:#ffbf3f;box-shadow:0 0 8px #ffbf3f}
-    .badge{padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--muted)}
-    .badge.ok{background:rgba(52,199,89,.12);color:#b3f7c9;border-color:rgba(52,199,89,.25)}
-    .badge.busy{background:rgba(255,77,79,.12);color:#ffc1c1;border-color:rgba(255,77,79,.25)}
-    .badge.dnd{background:rgba(255,191,63,.12);color:#ffe2b3;border-color:rgba(255,191,63,.25)}
-    .muted{color:var(--muted);font-size:12px}
-    .tabs{display:flex;gap:8px;margin:10px 0 18px 0}
-    .tabs button{padding:10px 12px;background:#0e1424;border-radius:10px;border:1px solid var(--border);color:#9aa3b2;cursor:pointer}
-    .tabs button.active{color:#e9edf3;background:#121a30}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .ghost{padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:#0c101c;color:#e9edf3;cursor:pointer}
-    .primary{padding:12px 14px;border-radius:12px;border:none;background:linear-gradient(180deg,#2ee59d,#0dbb79);color:#0a111a;font-weight:700;cursor:pointer}
-    .hidden{display:none !important}
-    .row{display:grid;gap:8px;margin:10px 0}
-    input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:#0c101c;color:#e9edf3}
-  </style>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-  <script defer src="app.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FroomNI — Team Room Status</title>
+<meta name="theme-color" content="#0b0d12">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo">
-          <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="8" width="48" height="48" rx="12" fill="#0b0d12"/><circle cx="24" cy="32" r="6" fill="#2ee59d"/><circle cx="40" cy="32" r="6" fill="#4ea8ff"/></svg>
-        </div>
-        <div>
-          <h1>FroomNI</h1>
-          <div class="muted">Team status</div>
-        </div>
-      </div>
-      <div><button id="logoutBtn" class="ghost hidden">Logout</button></div>
-    </div>
 
-    <div id="auth" class="panel">
-      <div class="head"><h2>Join your practice</h2><span class="pill">Config-ready</span></div>
-      <div class="grid cols-2">
-        <div class="row"><label>Practice code</label><input id="prCode" placeholder="Z00xxx"></div>
-        <div class="row"><label>Your full name</label><input id="fullName" placeholder="Jane Smith"></div>
-        <div class="row"><label>Role</label>
-          <select id="role">
-            <option>Reception</option><option>GP</option><option>Nurse</option><option>Manager</option><option>Other</option>
-          </select>
-        </div>
-        <div class="row"><label>Location</label><input id="location" placeholder="Front Desk, Room 3"></div>
-      </div>
-      <div class="actions"><button id="enterBtn" class="primary">Enter</button></div>
-    </div>
-
-   <div class="tabs">
-    <button class="active" data-tab="overview">Overview</button>
-    <button data-tab="me">My Status</button>
-    <button data-tab="activity">Activity</button>
-    <button id="adminTab" class="hidden" data-tab="admin">Admin</button>
+<!-- Auth / Join Area -->
+<section id="auth" class="panel">
+  <h2>Join Your Practice</h2>
+  <div class="field"><label>Practice Code</label><input id="prCode" placeholder="Z90001"></div>
+  <div class="field"><label>Full Name</label><input id="fullName"></div>
+  <div class="field"><label>Role</label>
+    <select id="role">
+      <option>GP</option>
+      <option>Nurse</option>
+      <option>Reception</option>
+      <option>Other</option>
+    </select>
   </div>
-    
-      <section id="tab-overview">
-        <div class="panel">
-          <div class="head"><h2>Team overview</h2><div class="pill" id="chipPractice">—</div></div>
-          <div id="team" class="grid cols-3"></div>
-          <div id="teamEmpty" class="muted hidden">No members yet.</div>
-        </div>
-      </section>
+  <div class="field"><label>Location (optional)</label><input id="location"></div>
+  <button id="enterBtn">Enter</button>
 
-      <section id="tab-me" class="hidden">
-        <div class="panel">
-          <div class="head"><h2>My status</h2><div class="pill" id="chipMe">—</div></div>
-          <div class="grid cols-2">
-            <div class="row"><label>Availability</label>
-              <select id="avail"><option value="free">Free</option><option value="busy">Busy</option><option value="dnd">Do Not Disturb</option></select>
-            </div>
-            <div class="row"><label>Activity</label>
-              <select id="activity"><option>Active now</option><option>In clinic</option><option>On calls</option><option>Break</option><option>Off site</option></select>
-            </div>
-            <div class="row"><label>Location</label><input id="meLocation" placeholder="Room 1"></div>
-            <div class="row"><label>Note</label><input id="note" placeholder="e.g. With patient until 15:30"></div>
-          </div>
-          <div class="actions"><button id="saveBtn" class="primary">Save</button></div>
-        </div>
-      </section>
+  <hr>
+  <h3>Admin / Staff Sign In</h3>
+  <div class="field"><label>Email</label><input id="email" type="email"></div>
+  <div class="field"><label>Password</label><input id="pass" type="password"></div>
+  <button id="signinBtn">Sign In</button>
+  <button id="signupToggle">Sign Up</button>
 
-      <section id="tab-activity" class="hidden">
-        <div class="panel">
-          <div class="head"><h2>Activity</h2></div>
-          <div id="activityList" class="grid"></div>
-          <div id="activityEmpty" class="muted hidden">No activity yet.</div>
-        </div>
-      </section>
-    
-      <section id="tab-admin" class="hidden">
-  <div class="card">
-    <h2>Admin • Claim</h2>
-    <div class="small">Sign in with your admin email, then click once to become admin.</div>
-    <button id="claimAdminBtn" class="primary">Make me admin</button>
-  </div>
-
-  <div class="card">
-    <h2>Admin • Create practice</h2>
-    <div class="formRow"><label>Practice code</label><input id="newPracticeCode" placeholder="Z00xxx"></div>
-    <div class="formRow"><label>Practice name</label><input id="newPracticeName" placeholder="Your Practice Name"></div>
-    <button id="createPracticeBtn" class="primary">Create practice</button>
-  </div>
-
-  <div class="card">
-    <h2>Admin • Invite staff</h2>
-    <div class="formRow"><label>Practice code</label><input id="invPractice" placeholder="Z00xxx"></div>
-    <div class="formRow"><label>Role</label>
-      <select id="invRole"><option>Reception</option><option>GP</option><option>Nurse</option><option>Manager</option><option>Other</option></select>
-    </div>
-    <button id="makeInviteBtn" class="primary">Generate invite</button>
-    <div class="small" id="lastInvite" style="margin-top:8px;"></div>
-  </div>
-
-  <div class="card">
-    <h2>Admin • Manage staff</h2>
-    <div class="formRow"><label>Practice code</label><input id="managePractice" placeholder="Z00xxx"></div>
-    <button id="loadStaffBtn">Load staff</button>
-    <div id="staffList" class="list"></div>
+  <div id="signupArea" class="hidden">
+    <div class="field"><label>Invite Code</label><input id="inviteCode"></div>
+    <div class="field"><label>Full Name</label><input id="signupName"></div>
+    <button id="signupBtn">Create Account</button>
   </div>
 </section>
-    </div>
+
+<!-- Tabs -->
+<section id="tabs" class="hidden">
+  <div class="tabs">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="me">My Status</button>
+    <button data-tab="activity">Activity</button>
+    <button id="adminTabBtn" data-tab="admin" id="adminTab" class="hidden">Admin</button>
   </div>
 
-  <script>if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js'); }</script>
+  <!-- Overview -->
+  <section id="tab-overview">
+    <h2>Practice: <span id="chipPractice"></span></h2>
+    <div id="team" class="list"></div>
+    <div id="teamEmpty" class="muted hidden">No staff yet.</div>
+  </section>
+
+  <!-- My Status -->
+  <section id="tab-me" class="hidden">
+    <h2>My Status — <span id="chipMe"></span></h2>
+    <div class="field"><label>Availability</label>
+      <select id="avail">
+        <option value="free">Free</option>
+        <option value="busy">Busy</option>
+        <option value="dnd">Do Not Disturb</option>
+      </select>
+    </div>
+    <div class="field"><label>Activity</label><input id="activity"></div>
+    <div class="field"><label>Location</label><input id="meLocation"></div>
+    <div class="field"><label>Note</label><input id="note"></div>
+    <button id="saveBtn">Save</button>
+  </section>
+
+  <!-- Activity -->
+  <section id="tab-activity" class="hidden">
+    <h2>Recent Changes</h2>
+    <div id="activityList" class="list"></div>
+    <div id="activityEmpty" class="muted hidden">No activity yet.</div>
+  </section>
+
+  <!-- Admin -->
+  <section id="tab-admin" class="hidden">
+    <h2>Admin Panel</h2>
+
+    <div class="panel">
+      <h3>1. Claim Admin</h3>
+      <button id="claimAdminBtn">Claim Admin Role</button>
+    </div>
+
+    <div class="panel">
+      <h3>2. Create Practice</h3>
+      <div class="field"><label>Practice Code</label><input id="newPracticeCode"></div>
+      <div class="field"><label>Practice Name</label><input id="newPracticeName"></div>
+      <button id="createPracticeBtn">Create</button>
+    </div>
+
+    <div class="panel">
+      <h3>3. Invite Staff</h3>
+      <div class="field"><label>Practice Code</label><input id="invPractice"></div>
+      <div class="field"><label>Role</label>
+        <select id="invRole">
+          <option>GP</option>
+          <option>Nurse</option>
+          <option>Reception</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <button id="makeInviteBtn">Make Invite</button>
+      <div id="lastInvite" class="small muted"></div>
+    </div>
+
+    <div class="panel">
+      <h3>4. Manage Staff</h3>
+      <div class="field"><label>Practice Code</label><input id="managePractice"></div>
+      <button id="loadStaffBtn">Load Staff</button>
+      <div id="staffList" class="list"></div>
+    </div>
+  </section>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
