@@ -92,7 +92,7 @@
         created: firebase.firestore.FieldValue.serverTimestamp()
       });
       for (const m of p.members) {
-        await db.collection("practices").doc(p.code).collection("members").add({
+        await db.collection("practices").doc(p.code).collection("users").add({
           name: m.name,
           role: m.role,
           status: m.status,
