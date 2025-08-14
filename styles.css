@@ -31,15 +31,15 @@ a{color:var(--brand-2);text-decoration:none}
 @media(min-width:1120px){.grid.cols-3{grid-template-columns:1fr 1fr 1fr}}
 
 .listItem{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--panel-2)}
-.statusDot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
-.dot-busy{background:var(--danger);box-shadow:0 0 10px var(--danger)}
-.dot-dnd{background:var(--warn);box-shadow:0 0 10px var(--warn)}
+.statusDot { width:12px; height:12px; border-radius:50%; background:#34c759; box-shadow:0 0 10px #34c759 } /* FREE = green */
+.dot-busy { background:#ffbf3f; box-shadow:0 0 10px #ffbf3f } /* BUSY = amber */
+.dot-dnd  { background:#ff4d4f; box-shadow:0 0 10px #ff4d4f } /* DND  = red   */
 
 .badges{display:flex;gap:8px;align-items:center}
-.badge{padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--muted)}
-.badge.ok{background:rgba(52,199,89,.12);color:#b3f7c9;border-color:rgba(52,199,89,.25)}
-.badge.busy{background:rgba(255,77,79,.12);color:#ffc1c1;border-color:rgba(255,77,79,.25)}
-.badge.dnd{background:rgba(255,191,63,.12);color:#ffe2b3;border-color:rgba(255,191,63,.25)}
+.badge     { padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid var(--border); color:var(--muted) }
+.badge.ok  { background:rgba(52,199,89,.12);  color:#b3f7c9;  border-color:rgba(52,199,89,.25) }   /* FREE */
+.badge.busy{ background:rgba(255,191,63,.12); color:#ffe2b3;  border-color:rgba(255,191,63,.25) }  /* BUSY amber */
+.badge.dnd { background:rgba(255,77,79,.12);  color:#ffc1c1;  border-color:rgba(255,77,79,.25) }
 
 .formRow{display:grid;gap:8px;margin:10px 0 6px}
 .formRow input,.formRow select,.formRow textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);background:#0c101c;color:var(--text)}
