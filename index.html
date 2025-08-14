@@ -76,13 +76,13 @@
       <div class="actions"><button id="enterBtn" class="primary">Enter</button></div>
     </div>
 
-    <div id="tabs" class="hidden">
-      <div class="tabs">
-        <button class="active" data-tab="overview">Overview</button>
-        <button data-tab="me">My Status</button>
-        <button data-tab="activity">Activity</button>
-      </div>
-
+   <div class="tabs">
+    <button class="active" data-tab="overview">Overview</button>
+    <button data-tab="me">My Status</button>
+    <button data-tab="activity">Activity</button>
+    <button id="adminTab" class="hidden" data-tab="admin">Admin</button>
+  </div>
+    
       <section id="tab-overview">
         <div class="panel">
           <div class="head"><h2>Team overview</h2><div class="pill" id="chipPractice">—</div></div>
@@ -115,6 +115,38 @@
           <div id="activityEmpty" class="muted hidden">No activity yet.</div>
         </div>
       </section>
+    
+      <section id="tab-admin" class="hidden">
+  <div class="card">
+    <h2>Admin • Claim</h2>
+    <div class="small">Sign in with your admin email, then click once to become admin.</div>
+    <button id="claimAdminBtn" class="primary">Make me admin</button>
+  </div>
+
+  <div class="card">
+    <h2>Admin • Create practice</h2>
+    <div class="formRow"><label>Practice code</label><input id="newPracticeCode" placeholder="Z00xxx"></div>
+    <div class="formRow"><label>Practice name</label><input id="newPracticeName" placeholder="Your Practice Name"></div>
+    <button id="createPracticeBtn" class="primary">Create practice</button>
+  </div>
+
+  <div class="card">
+    <h2>Admin • Invite staff</h2>
+    <div class="formRow"><label>Practice code</label><input id="invPractice" placeholder="Z00xxx"></div>
+    <div class="formRow"><label>Role</label>
+      <select id="invRole"><option>Reception</option><option>GP</option><option>Nurse</option><option>Manager</option><option>Other</option></select>
+    </div>
+    <button id="makeInviteBtn" class="primary">Generate invite</button>
+    <div class="small" id="lastInvite" style="margin-top:8px;"></div>
+  </div>
+
+  <div class="card">
+    <h2>Admin • Manage staff</h2>
+    <div class="formRow"><label>Practice code</label><input id="managePractice" placeholder="Z00xxx"></div>
+    <button id="loadStaffBtn">Load staff</button>
+    <div id="staffList" class="list"></div>
+  </div>
+</section>
     </div>
   </div>
 
