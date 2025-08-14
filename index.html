@@ -7,33 +7,6 @@
   <meta name="theme-color" content="#6ea8fe">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
-  <style>
-    :root{--bg:#0f1116;--bg2:#0b0d14;--card:#151823;--cardSub:#1a1f2e;--text:#eef1f7;--muted:#9aa4bf;--primary:#6ea8fe;--border:#22283a;--green:#2bd67b;--amber:#ffbe55;--red:#ff5d5d;--shadow:0 10px 30px rgba(0,0,0,.35);--radius:14px;--radiusSm:10px;--space:16px;--spaceSm:12px}
-    *{box-sizing:border-box}html,body{height:100%}body{margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0e1117,#0f121a 40%,var(--bg2));background-attachment:fixed}
-    h1,h2,h3{margin:0 0 8px 0}h2{font-size:22px}h3{font-size:18px}p{margin:0}
-    .view{display:none;padding:var(--space);max-width:760px;margin:0 auto}.view.active{display:block;animation:fade .18s ease-out}@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:var(--spaceSm);box-shadow:var(--shadow);margin-bottom:var(--spaceSm)}.card.subtle{background:var(--cardSub)}
-    input,select{width:100%;padding:12px;border-radius:var(--radiusSm);border:1px solid var(--border);background:#0c0f16;color:var(--text)}
-    label{display:block;font-size:14px;margin:10px 0}
-    button{border:none;border-radius:12px;padding:12px 14px;color:#fff;background:var(--cardSub);box-shadow:var(--shadow);font-weight:600;transition:transform .12s ease}button:active{transform:scale(.98)}button.primary{background:var(--primary)}button.ghost{background:transparent;border:1px solid var(--border)}button.sm{padding:8px 10px;font-size:13px}button.wide{width:100%}button.grow{flex:1}
-    .row{display:flex;gap:8px;align-items:center}.hint{color:var(--muted);font-size:12px}
-    .app-header,.app-footer{padding:12px 16px;display:flex;align-items:center;justify-content:space-between}.app-footer{justify-content:center}
-    .brand{display:flex;gap:10px;align-items:center}.logo{width:36px;height:36px}.brand-text h1{font-size:18px}.brand-text p{color:var(--muted);font-size:12px}
-    .toolbar{display:flex;gap:8px;margin:8px 0 12px 0}.toolbar.sticky{position:sticky;top:0;background:linear-gradient(180deg,rgba(15,17,22,.9),rgba(15,17,22,.6));backdrop-filter:blur(10px);padding:8px;border-bottom:1px solid var(--border);z-index:2}
-    .searchWrap{position:relative;flex:1}.searchWrap .icon{position:absolute;left:10px;top:10px;opacity:.7}.searchWrap input{padding-left:32px}
-    .list{list-style:none;padding:0;margin:0;display:grid;gap:8px}.list li{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .itemLeft{display:flex;gap:10px;align-items:center}.avatar{width:34px;height:34px;border-radius:50%;background:#10131b;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700}
-    .name{font-weight:700}.sub{color:var(--muted);font-size:12px}
-    .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;font-size:12px;font-weight:700;background:#10131b;border:1px solid var(--border)}
-    .badge .dot{width:10px;height:10px;border-radius:50%;display:inline-block}.badge.free{border-color:#0c2b1d}.badge.busy{border-color:#2b2510}.badge.dnd{border-color:#2b1010}.badge.pulse{animation:pulse .5s ease}@keyframes pulse{0%{transform:scale(.96)}100%{transform:scale(1)}}
-    .star{opacity:.7;font-size:18px}.star.active{opacity:1}
-    .room-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.meTop{display:flex;align-items:center;gap:10px}
-    .traffic{display:flex;gap:8px;margin:10px 0 12px 0}.light{flex:1;display:flex;gap:8px;align-items:center;justify-content:center;background:#0c0f16;border:1px solid var(--border)}
-    .lamp{width:14px;height:14px;border-radius:50%;display:inline-block;box-shadow:0 0 14px rgba(0,0,0,.4) inset}.lamp.green{background:var(--green)}.lamp.amber{background:var(--amber)}.lamp.red{background:var(--red)}
-    .presets{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 8px 0}.chip{padding:8px 10px;border-radius:999px;border:1px solid var(--border);background:#0c0f16;font-size:13px}
-    .tabbar{position:sticky;bottom:0;display:flex;gap:8px;padding:8px;background:rgba(8,10,15,.7);backdrop-filter:blur(12px);border-top:1px solid var(--border)}.tabbar button{flex:1}
-    .empty{display:grid;place-items:center;padding:24px;color:var(--muted)}.subtle{background:var(--cardSub)}
-  </style>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
