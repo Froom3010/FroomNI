@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FroomNI • Seed test data</title>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:#0b0d12;color:#e9edf3;margin:0;padding:20px}
+.card{background:#0e1424;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;margin:12px 0}
+textarea,input,button{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0c1220;color:#e9edf3}
+button{cursor:pointer;background:#18243a}</style>
+</head><body>
+<h1>Seed demo practices + members</h1>
+<div class="card">
+  <h3>1) Paste firebaseConfig JSON</h3>
+  <textarea id="cfg" rows="7" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","appId":"..."}'></textarea>
+  <button id="init">Initialise</button> <span id="o1"></span>
+</div>
+<div class="card">
+  <h3>2) Sign in anonymously</h3>
+  <button id="signin">Sign in anon</button> <span id="o2"></span>
+</div>
+<div class="card">
+  <h3>3) Create 2 practices + sample members</h3>
+  <button id="seed">Seed now</button> <span id="o3"></span>
+</div>
+<script>
+let app=false, db, auth;
+init.onclick=()=>{ try{ const cfg=JSON.parse(cfg.value.trim()); firebase.initializeApp(cfg); db=firebase.firestore(); auth=firebase.auth(); app=true; o1.textContent='OK'; }catch(e){ alert('Bad JSON'); }};
+signin.onclick=async()=>{ if(!app) return alert('Init first'); await auth.signInAnonymously(); o2.textContent='Signed in'; };
+seed.onclick=async()=>{
+  if(!auth||!auth.currentUser) return alert('Sign in first');
+  const practices=[{code:'Z90001',name:'Greenway Practice'},{code:'Z90002',name:'Harbour Medical Centre'}];
+  const members={Z90001:[{fullName:'Dr Alice Smith',role:'GP',location:'Room 1'},{fullName:'Dr John Kerr',role:'GP',location:'Room 2'},{fullName:'Mary McGee',role:'Reception',location:'Front Desk'}],
+                 Z90002:[{fullName:'Dr Paul Hughes',role:'GP',location:'Room A'},{fullName:'Kevin Brown',role:'Nurse',location:'Treatment Room'},{fullName:'Helen Walsh',role:'Manager',location:'Office'}]};
+  for(const p of practices){
+    await db.collection('practices').doc(p.code).set({name:p.name,createdAt:Date.now()},{merge:true});
+    for(const m of members[p.code]){
+      const id=('seed_'+m.fullName).replace(/\W+/g,'_')+Math.floor(Math.random()*9999);
+      await db.collection('practices').doc(p.code).collection('users').doc(id).set({...m,availability:'free',activity:'Active now',note:'',lastActive:Date.now()},{merge:true});
+    }
+  }
+  o3.textContent='Seeded.';
+};
+</script>
+</body></html>
