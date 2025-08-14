@@ -7,21 +7,45 @@
   --border:rgba(255,255,255,.1);
   --brand:#4ea8ff;
   --brand2:#2ee59d;
-  --ok:#34c759;           /* FREE (green) */
-  --busy:#ffbf3f;         /* BUSY (amber) */
-  --dnd:#ff4d4f;          /* DND (red)   */
+  --ok:#34c759;       /* FREE (green) */
+  --busy:#ffbf3f;     /* BUSY (amber) */
+  --dnd:#ff4d4f;      /* DND (red)   */
   --radius:16px;
   --shadow:0 14px 30px rgba(0,0,0,.35);
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:radial-gradient(1200px 800px at 80% -10%, #101424 0%, #0b0d12 60%) fixed;color:var(--text);font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial}
-
+html,body{
+  margin:0;height:100%;
+  background:radial-gradient(1200px 800px at 80% -10%, #101424 0%, #0b0d12 60%) fixed;
+  color:var(--text);
+  font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
 a{color:var(--brand)}
 .hidden{display:none !important}
 .muted{color:var(--muted)}
 .small{font-size:12px;color:var(--muted)}
 
+/* Header */
+.appHeader{
+  position:sticky;top:0;z-index:10;
+  background:var(--panel);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;
+  border-bottom:1px solid var(--border);
+}
+.logoArea{display:flex;align-items:center;gap:8px;cursor:pointer}
+.logo{height:28px;width:auto}
+.logoText{font-weight:700;font-size:18px;color:var(--text)}
+.userChip{
+  display:flex;align-items:center;gap:8px;
+  background:var(--panel-2);
+  padding:4px 8px;border-radius:12px;border:1px solid var(--border);
+}
+.userChip .avatar{width:28px;height:28px;font-size:12px;border-radius:50%;display:grid;place-items:center;background:#131a2c;color:#cdd6e5;font-weight:700}
+.userInfo{display:flex;flex-direction:column;line-height:1.1}
+
+/* Panels & layout */
 .panel{
   background:linear-gradient(180deg,#0f1322,#0c101c);
   border:1px solid var(--border);
@@ -30,9 +54,7 @@ a{color:var(--brand)}
   box-shadow:var(--shadow);
   margin:12px;
 }
-
 h1,h2,h3{margin:0 0 10px 0}
-
 .field{display:grid;gap:6px;margin:10px 12px}
 input,select,textarea,button{
   width:100%;padding:12px;border-radius:12px;
@@ -58,36 +80,16 @@ button.primary{background:linear-gradient(180deg,var(--brand2),#0dbb79);color:#0
 }
 
 /* Status visuals — SWAPPED per your request */
-.statusDot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}      /* FREE */
-.dot-busy{background:var(--busy);box-shadow:0 0 10px var(--busy)}   /* BUSY = amber */
-.dot-dnd{background:var(--dnd);box-shadow:0 0 10px var(--dnd)}      /* DND  = red   */
+.statusDot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)} /* FREE */
+.dot-busy{background:var(--busy);box-shadow:0 0 10px var(--busy)} /* BUSY = amber */
+.dot-dnd{background:var(--dnd);box-shadow:0 0 10px var(--dnd)}    /* DND  = red   */
 
 .badge{padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--muted)}
 .badge.ok{background:rgba(52,199,89,.12);color:#b3f7c9;border-color:rgba(52,199,89,.25)}                    /* FREE */
 .badge.busy{background:rgba(255,191,63,.12);color:#ffe2b3;border-color:rgba(255,191,63,.25)}                 /* BUSY amber */
 .badge.dnd{background:rgba(255,77,79,.12);color:#ffc1c1;border-color:rgba(255,77,79,.25)}                    /* DND red   */
 
-/* Avatar */
-.avatar{
-  width:36px;height:36px;border-radius:50%;
-  display:grid;place-items:center;background:#131a2c;color:#cdd6e5;font-weight:700
-}
-
-/* Layout helpers */
+/* Grid helpers */
 .grid{display:grid;gap:12px}
 @media(min-width:720px){.grid.cols-2{grid-template-columns:1fr 1fr}}
 @media(min-width:1120px){.grid.cols-3{grid-template-columns:1fr 1fr 1fr}}
-
-/* Header pills / chips */
-.pill{
-  padding:6px 10px;border-radius:999px;border:1px solid var(--border);
-  background:#0e1424;color:var(--muted);font-size:12px
-}
-
-/* Section headings spacing */
-#tab-overview, #tab-me, #tab-activity, #tab-admin{
-  margin:12px
-}
-#tab-overview h2, #tab-me h2, #tab-activity h2, #tab-admin h2{
-  margin:0 0 8px 0
-}
