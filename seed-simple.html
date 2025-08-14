@@ -62,6 +62,7 @@
       .catch(e => alert(e.message));
   }
 
+<script>
   async function seedData() {
     if (!db) return alert("Firebase not initialised!");
 
@@ -70,39 +71,45 @@
         code: "Z90001",
         name: "Greenway Practice",
         members: [
-          { name: "Alice Smith", role: "GP", status: "free" },
-          { name: "John Kerr", role: "GP", status: "busy" },
-          { name: "Mary McGee", role: "Reception", status: "free" }
+          { fullName: "Dr Alice Smith", role: "GP",        location: "Room 1" },
+          { fullName: "Dr John Kerr",   role: "GP",        location: "Room 2" },
+          { fullName: "Mary McGee",     role: "Reception", location: "Front Desk" }
         ]
       },
       {
         code: "Z90002",
         name: "Harbour Medical Centre",
         members: [
-          { name: "Paul Hughes", role: "GP", status: "free" },
-          { name: "Kevin Brown", role: "Nurse", status: "busy" },
-          { name: "Helen Walsh", role: "Manager", status: "free" }
+          { fullName: "Dr Paul Hughes", role: "GP",    location: "Room A" },
+          { fullName: "Kevin Brown",    role: "Nurse", location: "Treatment Room" },
+          { fullName: "Helen Walsh",    role: "Manager", location: "Office" }
         ]
       }
     ];
 
     for (const p of practices) {
-      await db.collection("practices").doc(p.code).set({
-        name: p.name,
-        created: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      await db.collection("practices").doc(p.code)
+        .set({ name: p.name, createdAt: Date.now() }, { merge: true });
+
       for (const m of p.members) {
-        await db.collection("practices").doc(p.code).collection("users").add({
-          name: m.name,
+        // create a readable id but any string is fine
+        const docId = ("seed_" + m.fullName).replace(/\W+/g, "_") + Math.floor(Math.random()*9999);
+        await db.collection("practices").doc(p.code).collection("users").doc(docId).set({
+          fullName: m.fullName,
           role: m.role,
-          status: m.status,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        });
+          location: m.location,
+          availability: "free",
+          activity: "Active now",
+          note: "",
+          lastActive: Date.now()
+        }, { merge: true });
       }
     }
-    alert("Seeding complete!");
+
+    alert("Seeded practices and members successfully.");
   }
 </script>
+
 
 </body>
 </html>
