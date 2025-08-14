@@ -177,9 +177,7 @@
         const meta=document.createElement('div'); const name=document.createElement('div'); name.className='name'; name.textContent=m.name;
         const sub=document.createElement('div'); sub.className='sub'; sub.textContent=`${m.location||''}${m.location&&m.note?' • ':''}${m.note||''}${m.lastActive?' • active '+fmtAgo(m.lastActive):''}`;
         meta.append(name,sub); left.append(av,meta);
-        const right=document.createElement('div'); const star=document.createElement('button'); star.className=`ghost sm star ${m.fav?'active':''}`; star.textContent='⭐';
-        star.addEventListener('click',(e)=>{e.stopPropagation(); m.fav=!m.fav; saveMembers(); renderOverview();});
-        const chip=badge(m.status); right.style.display='flex'; right.style.gap='8px'; right.append(chip,star);
+        right.append(chip);
         li.append(left,right); ul.append(li);
       });
       $('#emptyState').hidden = shown>0;
