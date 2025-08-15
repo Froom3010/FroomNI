@@ -1,6 +1,5 @@
 /***** FroomNI — Full app.js (admin + live status + header chip) *****/
 
-// 1) Firebase init — paste your config:
 const firebaseConfig = {
   apiKey: "AIzaSyCzP19H__YXWhap30SCDC4_volJz-erwt0",
   authDomain: "froomtest-d83f3.firebaseapp.com",
