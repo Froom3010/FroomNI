@@ -1,140 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FroomNI — GP Room Status</title>
-<meta name="theme-color" content="#0b0d12">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FroomNI — Team Room Status</title>
+  <meta name="theme-color" content="#0b0d12" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="apple-touch-icon-180.png" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
   <!-- Header -->
-<header class="appHeader">
-  <div class="logoArea" onclick="showTab('tab-overview')">
-    <img src="logo.png" alt="Froom" class="logo">
-    <span class="logoText">Froom</span>
-  </div>
-  <div class="userChip" id="userChip">
-    <div class="avatar" id="userAvatar">U</div>
-    <div class="userInfo">
-      <div id="chipName">User Name</div>
-      <div id="chipRole" class="muted small">Role</div>
+  <header class="appHeader">
+    <div class="logoArea" onclick="showTab('tab-overview')">
+      <!-- Make sure you have a file called logo.svg OR change this to logo.png -->
+      <img src="logo.svg" alt="Froom logo" class="logo" />
+      <span class="logoText">Froom</span>
     </div>
-  </div>
-</header>
-<!-- Auth / Join Area -->
-<section id="auth" class="panel">
-  <h2>Join Your Practice</h2>
-  <div class="field"><label>Practice Code</label><input id="prCode" placeholder="Z90001"></div>
-  <div class="field"><label>Full Name</label><input id="fullName"></div>
-  <div class="field"><label>Role</label>
-    <select id="role">
-      <option>GP</option>
-      <option>Nurse</option>
-      <option>Reception</option>
-      <option>Other</option>
-    </select>
-  </div>
-  <div class="field"><label>Location (optional)</label><input id="location"></div>
-  <button id="enterBtn">Enter</button>
-
-  <hr>
-  <h3>Admin / Staff Sign In</h3>
-  <div class="field"><label>Email</label><input id="email" type="email"></div>
-  <div class="field"><label>Password</label><input id="pass" type="password"></div>
-  <button id="signinBtn">Sign In</button>
-  <button id="signupToggle">Sign Up</button>
-
-  <div id="signupArea" class="hidden">
-    <div class="field"><label>Invite Code</label><input id="inviteCode"></div>
-    <div class="field"><label>Full Name</label><input id="signupName"></div>
-    <button id="signupBtn">Create Account</button>
-  </div>
-</section>
-
-<!-- Tabs -->
-<section id="tabs" class="hidden">
-  <div class="tabs">
-    <button data-tab="overview" class="active">Overview</button>
-    <button data-tab="me">My Status</button>
-    <button data-tab="activity">Activity</button>
-    <button id="adminTabBtn" data-tab="admin" id="adminTab" class="hidden">Admin</button>
-  </div>
-
-  <!-- Overview -->
-  <section id="tab-overview">
-    <h2>Practice: <span id="chipPractice"></span></h2>
-    <div id="team" class="list"></div>
-    <div id="teamEmpty" class="muted hidden">No staff yet.</div>
-  </section>
-
-  <!-- My Status -->
-  <section id="tab-me" class="hidden">
-    <h2>My Status — <span id="chipMe"></span></h2>
-    <div class="field"><label>Availability</label>
-      <select id="avail">
-        <option value="free">Free</option>
-        <option value="busy">Busy</option>
-        <option value="dnd">Do Not Disturb</option>
-      </select>
+    <div class="userChip" id="userChip">
+      <div class="avatar" id="userAvatar">U</div>
+      <div class="userInfo">
+        <div id="chipName"></div>
+        <div id="chipRole" class="muted small"></div>
+      </div>
     </div>
-    <div class="field"><label>Activity</label><input id="activity"></div>
-    <div class="field"><label>Location</label><input id="meLocation"></div>
-    <div class="field"><label>Note</label><input id="note"></div>
-    <button id="saveBtn">Save</button>
-  </section>
+  </header>
 
-  <!-- Activity -->
-  <section id="tab-activity" class="hidden">
-    <h2>Recent Changes</h2>
-    <div id="activityList" class="list"></div>
-    <div id="activityEmpty" class="muted hidden">No activity yet.</div>
-  </section>
+  <!-- Page content container -->
+  <div class="page">
 
-  <!-- Admin -->
-  <section id="tab-admin" class="hidden">
-    <h2>Admin Panel</h2>
+    <!-- Auth / Join -->
+    <section id="auth" class="panel">
+      <h2>Join Your Practice</h2>
 
-    <div class="panel">
-      <h3>1. Claim Admin</h3>
-      <button id="claimAdminBtn">Claim Admin Role</button>
-    </div>
+      <div class="field">
+        <label>Practice Code</label>
+        <input id="prCode" placeholder="Z00701" />
+      </div>
 
-    <div class="panel">
-      <h3>2. Create Practice</h3>
-      <div class="field"><label>Practice Code</label><input id="newPracticeCode"></div>
-      <div class="field"><label>Practice Name</label><input id="newPracticeName"></div>
-      <button id="createPracticeBtn">Create</button>
-    </div>
+      <div class="field">
+        <label>Full Name</label>
+        <input id="fullName" placeholder="Jane Smith" />
+      </div>
 
-    <div class="panel">
-      <h3>3. Invite Staff</h3>
-      <div class="field"><label>Practice Code</label><input id="invPractice"></div>
-      <div class="field"><label>Role</label>
-        <select id="invRole">
+      <div class="field">
+        <label>Role</label>
+        <select id="role">
           <option>GP</option>
           <option>Nurse</option>
           <option>Reception</option>
+          <option>Manager</option>
           <option>Other</option>
         </select>
       </div>
-      <button id="makeInviteBtn">Make Invite</button>
-      <div id="lastInvite" class="small muted"></div>
-    </div>
 
-    <div class="panel">
-      <h3>4. Manage Staff</h3>
-      <div class="field"><label>Practice Code</label><input id="managePractice"></div>
-      <button id="loadStaffBtn">Load Staff</button>
-      <div id="staffList" class="list"></div>
-    </div>
-  </section>
-</section>
+      <div class="field">
+        <label>Location (optional)</label>
+        <input id="location" placeholder="Room 1 • Front Desk" />
+      </div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<script src="app.js"></script>
+      <button id="enterBtn">Enter</button>
+
+      <hr />
+
+      <h3>Admin / Staff Sign In</h3>
+      <div class="field">
+        <label>Email</label>
+        <input id="email" type="email" placeholder="you@practice.com" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="pass" type="password" placeholder="••••••••" />
+      </div>
+      <button id="signinBtn">Sign In</button>
+      <button id="signupToggle" class="ghost">Sign Up</button>
+
+      <div id="signupArea" class="hidden">
+        <div class="field">
+          <label>Invite Code</label>
+          <input id="inviteCode" placeholder="Paste invite code" />
+        </div>
+        <div class="field">
+          <label>Full Name</label>
+          <input id="signupName" placeholder="Your full name" />
+        </div>
+        <button id="signupBtn" class="primary">Create Account</button>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <section id="tabs" class="hidden">
+      <div class="tabs">
+        <button data-tab="overview" class="active">Overview</button>
+        <button data-tab="me">My Status</button>
+        <button data-tab="activity">Activity</button>
+        <button id="adminTab" data-tab="admin" class="hidden">Admin</button>
+      </div>
+
+      <!-- Overview -->
+      <section id="tab-overview">
+        <h2>Practice: <span id="chipPractice"></span></h2>
+        <div id="team" class="list"></div>
+        <div id="teamEmpty" class="muted hidden">No staff yet.</div>
+      </section>
+
+      <!-- My Status -->
+      <section id="tab-me" class="hidden">
+        <h2>My Status — <span id="chipMe"></span></h2>
+
+        <div class="field">
+          <label>Availability</label>
+          <select id="avail">
+            <option value="free">Free</option>
+            <option value="busy">Busy</option>
+            <option value="dnd">Do Not Disturb</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Activity</label>
+          <input id="activity" placeholder="In clinic • On calls • Break" />
+        </div>
+
+        <div class="field">
+          <label>Location</label>
+          <input id="meLocation" placeholder="Room 2 • Front Desk" />
+        </div>
+
+        <div class="field">
+          <label>Note</label>
+          <input id="note" placeholder="e.g., With patient until 15:30" />
+        </div>
+
+        <button id="saveBtn" class="primary">Save</button>
+      </section>
+
+      <!-- Activity -->
+      <section id="tab-activity" class="hidden">
+        <h2>Recent Changes</h2>
+        <div id="activityList" class="list"></div>
+        <div id="activityEmpty" class="muted hidden">No activity yet.</div>
+      </section>
+
+      <!-- Admin -->
+      <section id="tab-admin" class="hidden">
+        <h2>Admin Panel</h2>
+
+        <div class="panel">
+          <h3>1. Claim Admin</h3>
+          <div class="small muted">Sign in with your admin email, then click once.</div>
+          <button id="claimAdminBtn" class="primary">Claim Admin Role</button>
+        </div>
+
+        <div class="panel">
+          <h3>2. Create Practice</h3>
+          <div class="field">
+            <label>Practice Code</label>
+            <input id="newPracticeCode" placeholder="Z00xxx" />
+          </div>
+          <div class="field">
+            <label>Practice Name</label>
+            <input id="newPracticeName" placeholder="Practice name" />
+          </div>
+          <button id="createPracticeBtn">Create Practice</button>
+        </div>
+
+        <div class="panel">
+          <h3>3. Invite Staff</h3>
+          <div class="field">
+            <label>Practice Code</label>
+            <input id="invPractice" placeholder="Z00xxx" />
+          </div>
+          <div class="field">
+            <label>Role</label>
+            <select id="invRole">
+              <option>GP</option>
+              <option>Nurse</option>
+              <option>Reception</option>
+              <option>Manager</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <button id="makeInviteBtn">Generate Invite</button>
+          <div id="lastInvite" class="small muted" style="margin-top:8px;"></div>
+        </div>
+
+        <div class="panel">
+          <h3>4. Manage Staff</h3>
+          <div class="field">
+            <label>Practice Code</label>
+            <input id="managePractice" placeholder="Z00xxx" />
+          </div>
+          <button id="loadStaffBtn">Load Staff</button>
+          <div id="staffList" class="list"></div>
+        </div>
+      </section>
+    </section>
+  </div><!-- /.page -->
+
+  <!-- Firebase + App -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
