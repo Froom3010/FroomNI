@@ -7,9 +7,9 @@
   --border:rgba(255,255,255,.1);
   --brand:#4ea8ff;
   --brand2:#2ee59d;
-  --ok:#34c759;       /* FREE (green) */
-  --busy:#ffbf3f;     /* BUSY (amber) */
-  --dnd:#ff4d4f;      /* DND (red)   */
+  --ok:#34c759;   /* FREE */
+  --busy:#ffbf3f; /* BUSY (amber) */
+  --dnd:#ff4d4f;  /* DND  (red)   */
   --radius:16px;
   --shadow:0 14px 30px rgba(0,0,0,.35);
 }
@@ -21,75 +21,78 @@ html,body{
   color:var(--text);
   font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
 }
-a{color:var(--brand)}
 .hidden{display:none !important}
+.small{font-size:12px}
 .muted{color:var(--muted)}
-.small{font-size:12px;color:var(--muted)}
+a{color:var(--brand)}
 
 /* Header */
 .appHeader{
   position:sticky;top:0;z-index:10;
   background:var(--panel);
   display:flex;align-items:center;justify-content:space-between;
-  padding:8px 12px;
-  border-bottom:1px solid var(--border);
+  padding:8px 12px;border-bottom:1px solid var(--border);
 }
 .logoArea{display:flex;align-items:center;gap:8px;cursor:pointer}
 .logo{height:28px;width:auto}
-.logoText{font-weight:700;font-size:18px;color:var(--text)}
+.logoText{font-weight:700;font-size:18px}
 .userChip{
   display:flex;align-items:center;gap:8px;
   background:var(--panel-2);
   padding:4px 8px;border-radius:12px;border:1px solid var(--border);
 }
-.userChip .avatar{width:28px;height:28px;font-size:12px;border-radius:50%;display:grid;place-items:center;background:#131a2c;color:#cdd6e5;font-weight:700}
+.userChip .avatar{
+  width:28px;height:28px;border-radius:50%;
+  display:grid;place-items:center;background:#131a2c;color:#cdd6e5;font-weight:700;font-size:12px;
+}
 .userInfo{display:flex;flex-direction:column;line-height:1.1}
 
-/* Panels & layout */
+/* Page container */
+.page{ max-width:980px; margin:16px auto 40px; padding:0 16px; }
+
+/* Panels & form controls */
 .panel{
   background:linear-gradient(180deg,#0f1322,#0c101c);
   border:1px solid var(--border);
   border-radius:var(--radius);
   padding:16px;
   box-shadow:var(--shadow);
-  margin:12px;
+  margin:12px 0;
 }
 h1,h2,h3{margin:0 0 10px 0}
-.field{display:grid;gap:6px;margin:10px 12px}
+.field{display:grid;gap:6px;margin:14px 0}
 input,select,textarea,button{
   width:100%;padding:12px;border-radius:12px;
   border:1px solid var(--border);background:#0c101c;color:var(--text)
 }
-button{cursor:pointer;background:linear-gradient(180deg,#18243a,#121b2e)}
-button.primary{background:linear-gradient(180deg,var(--brand2),#0dbb79);color:#0a111a;border:none;font-weight:700}
+button{cursor:pointer;background:linear-gradient(180deg,#18243a,#121b2e);min-height:44px;font-weight:600}
+button.primary{background:linear-gradient(180deg,var(--brand2),#0dbb79);color:#0a111a;border:none}
 
 /* Tabs */
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 .tabs button{
   padding:10px 12px;border-radius:10px;border:1px solid var(--border);
   background:#0e1424;color:var(--muted);cursor:pointer
 }
 .tabs button.active{color:var(--text);background:#121a30}
 
-/* Lists & items */
-.list{display:grid;gap:12px;margin:12px}
-.listItem,.item{
+/* Sections */
+#tab-overview,#tab-me,#tab-activity,#tab-admin{ margin:16px 0 }
+
+/* Lists */
+.list{display:grid;gap:12px;margin:12px 0}
+.item,.listItem{
   display:flex;gap:12px;align-items:center;
   padding:12px;border:1px solid var(--border);
   border-radius:14px;background:var(--panel-2)
 }
 
-/* Status visuals — SWAPPED per your request */
-.statusDot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)} /* FREE */
-.dot-busy{background:var(--busy);box-shadow:0 0 10px var(--busy)} /* BUSY = amber */
-.dot-dnd{background:var(--dnd);box-shadow:0 0 10px var(--dnd)}    /* DND  = red   */
+/* Status visuals (BUSY amber, DND red) */
+.statusDot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.dot-busy{background:var(--busy);box-shadow:0 0 10px var(--busy)}
+.dot-dnd{ background:var(--dnd); box-shadow:0 0 10px var(--dnd) }
 
 .badge{padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--muted)}
-.badge.ok{background:rgba(52,199,89,.12);color:#b3f7c9;border-color:rgba(52,199,89,.25)}                    /* FREE */
-.badge.busy{background:rgba(255,191,63,.12);color:#ffe2b3;border-color:rgba(255,191,63,.25)}                 /* BUSY amber */
-.badge.dnd{background:rgba(255,77,79,.12);color:#ffc1c1;border-color:rgba(255,77,79,.25)}                    /* DND red   */
-
-/* Grid helpers */
-.grid{display:grid;gap:12px}
-@media(min-width:720px){.grid.cols-2{grid-template-columns:1fr 1fr}}
-@media(min-width:1120px){.grid.cols-3{grid-template-columns:1fr 1fr 1fr}}
+.badge.ok{  background:rgba(52,199,89,.12); color:#b3f7c9; border-color:rgba(52,199,89,.25) }
+.badge.busy{background:rgba(255,191,63,.12); color:#ffe2b3; border-color:rgba(255,191,63,.25)}
+.badge.dnd{ background:rgba(255,77,79,.12);  color:#ffc1c1; border-color:rgba(255,77,79,.25) }
