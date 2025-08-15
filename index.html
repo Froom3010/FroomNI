@@ -5,17 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FroomNI — Team Room Status</title>
   <meta name="theme-color" content="#0b0d12" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="apple-touch-icon-180.png" />
-  <link rel="icon" href="icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon-180.png" />
 </head>
 <body>
 
   <!-- Header -->
   <header class="appHeader">
     <div class="logoArea" onclick="showTab('tab-overview')">
-      <!-- Make sure you have a file called logo.svg OR change this to logo.png -->
+      <!-- Use logo.svg (or change the src to your file) -->
       <img src="logo.svg" alt="Froom logo" class="logo" />
       <span class="logoText">Froom</span>
     </div>
@@ -28,69 +27,89 @@
     </div>
   </header>
 
-  <!-- Page content container -->
+  <!-- Page container -->
   <div class="page">
 
-    <!-- Auth / Join -->
+    <!-- AUTH WRAPPER (kept for app.js) -->
     <section id="auth" class="panel">
-      <h2>Join Your Practice</h2>
 
-      <div class="field">
-        <label>Practice Code</label>
-        <input id="prCode" placeholder="Z00701" />
-      </div>
+      <!-- PRACTICE SCREEN (Landing) -->
+      <div id="practiceScreen">
+        <h2>Join Your Practice</h2>
 
-      <div class="field">
-        <label>Full Name</label>
-        <input id="fullName" placeholder="Jane Smith" />
-      </div>
-
-      <div class="field">
-        <label>Role</label>
-        <select id="role">
-          <option>GP</option>
-          <option>Nurse</option>
-          <option>Reception</option>
-          <option>Manager</option>
-          <option>Other</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Location (optional)</label>
-        <input id="location" placeholder="Room 1 • Front Desk" />
-      </div>
-
-      <button id="enterBtn" type="button">Enter</button>
-
-      <hr />
-
-      <h3>Admin / Staff Sign In</h3>
-      <div class="field">
-        <label>Email</label>
-        <input id="email" type="email" placeholder="you@practice.com" />
-      </div>
-      <div class="field">
-        <label>Password</label>
-        <input id="pass" type="password" placeholder="••••••••" />
-      </div>
-      <button id="signinBtn" type="button">Sign In</button>
-      <button id="signupToggle" type="button" class="ghost">Sign Up</button>
-      
-      <div id="signupArea" class="hidden">
         <div class="field">
-          <label>Invite Code</label>
-          <input id="inviteCode" placeholder="Paste invite code" />
+          <label>Practice Code</label>
+          <input id="prCode" placeholder="Z00701" />
         </div>
+
         <div class="field">
           <label>Full Name</label>
-          <input id="signupName" placeholder="Your full name" />
+          <input id="fullName" placeholder="Jane Smith" />
         </div>
-        <button id="signupBtn" type="button" class="primary">Create Account</button>
+
+        <div class="field">
+          <label>Role</label>
+          <select id="role">
+            <option>GP</option>
+            <option>Nurse</option>
+            <option>Reception</option>
+            <option>Manager</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Location (optional)</label>
+          <input id="location" placeholder="Room 1 • Front Desk" />
+        </div>
+
+        <button id="enterBtn" type="button" class="primary">Enter</button>
+
+        <hr />
+        <div class="small muted">
+          Are you an administrator?  
+          <a href="#" id="toAdmin">Go to admin / staff sign in</a>
+        </div>
       </div>
+
+      <!-- ADMIN / STAFF SCREEN (Separate) -->
+      <div id="adminScreen" class="hidden">
+        <h2>Admin / Staff Sign In</h2>
+
+        <div class="field">
+          <label>Email</label>
+          <input id="email" type="email" placeholder="you@practice.com" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="pass" type="password" placeholder="••••••••" />
+        </div>
+
+        <button id="signinBtn" type="button">Sign In</button>
+        <button id="signupToggle" type="button" class="ghost">Sign Up</button>
+
+        <div id="signupArea" class="hidden">
+          <div class="field">
+            <label>Invite Code</label>
+            <input id="inviteCode" placeholder="Paste invite code" />
+          </div>
+          <div class="field">
+            <label>Full Name</label>
+            <input id="signupName" placeholder="Your full name" />
+          </div>
+          <button id="signupBtn" type="button" class="primary">Create Account</button>
+        </div>
+
+        <hr />
+        <div class="small muted">
+          Back to practice login?  
+          <a href="#" id="toPractice">Go to practice join</a>
+        </div>
+      </div>
+
     </section>
 
-    <!-- Tabs -->
+    <!-- APP TABS (shown after joining a practice) -->
     <section id="tabs" class="hidden">
       <div class="tabs">
         <button data-tab="overview" class="active">Overview</button>
@@ -134,7 +153,7 @@
           <input id="note" placeholder="e.g., With patient until 15:30" />
         </div>
 
-        <button id="saveBtn" class="primary">Save</button>
+        <button id="saveBtn" type="button" class="primary">Save</button>
       </section>
 
       <!-- Activity -->
@@ -151,7 +170,7 @@
         <div class="panel">
           <h3>1. Claim Admin</h3>
           <div class="small muted">Sign in with your admin email, then click once.</div>
-          <button id="claimAdminBtn" class="primary">Claim Admin Role</button>
+          <button id="claimAdminBtn" type="button" class="primary">Claim Admin Role</button>
         </div>
 
         <div class="panel">
@@ -164,7 +183,7 @@
             <label>Practice Name</label>
             <input id="newPracticeName" placeholder="Practice name" />
           </div>
-          <button id="createPracticeBtn">Create Practice</button>
+          <button id="createPracticeBtn" type="button">Create Practice</button>
         </div>
 
         <div class="panel">
@@ -183,7 +202,7 @@
               <option>Other</option>
             </select>
           </div>
-          <button id="makeInviteBtn">Generate Invite</button>
+          <button id="makeInviteBtn" type="button">Generate Invite</button>
           <div id="lastInvite" class="small muted" style="margin-top:8px;"></div>
         </div>
 
@@ -193,12 +212,22 @@
             <label>Practice Code</label>
             <input id="managePractice" placeholder="Z00xxx" />
           </div>
-          <button id="loadStaffBtn">Load Staff</button>
+          <button id="loadStaffBtn" type="button">Load Staff</button>
           <div id="staffList" class="list"></div>
         </div>
       </section>
     </section>
   </div><!-- /.page -->
+
+  <!-- Simple screen toggles (doesn't interfere with app.js) -->
+  <script>
+    const showAdmin = ()=>{ document.getElementById('practiceScreen').classList.add('hidden'); document.getElementById('adminScreen').classList.remove('hidden'); };
+    const showPractice = ()=>{ document.getElementById('adminScreen').classList.add('hidden'); document.getElementById('practiceScreen').classList.remove('hidden'); };
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const a=document.getElementById('toAdmin'); if(a) a.addEventListener('click', e=>{e.preventDefault();showAdmin();});
+      const b=document.getElementById('toPractice'); if(b) b.addEventListener('click', e=>{e.preventDefault();showPractice();});
+    });
+  </script>
 
   <!-- Firebase + App -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
