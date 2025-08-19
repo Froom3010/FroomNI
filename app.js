@@ -8,11 +8,14 @@ const firebaseConfig = {
   messagingSenderId: "313030534473",
   appId: "1:313030534473:web:180fa6e5856a9011702698"
 };
+
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-// 2) Helpers
+/* ------------------------------------------------------------------ */
+/* Helpers                                                            */
+/* ------------------------------------------------------------------ */
 const $  = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
 const on = (sel, ev, fn)=>{ const el=$(sel); if(el) el.addEventListener(ev, fn); };
@@ -20,14 +23,15 @@ const show = el=>{ if(el) el.classList.remove('hidden'); };
 const hide = el=>{ if(el) el.classList.add('hidden'); };
 const val  = (sel)=>($(sel)?.value || '').trim();
 const set  = (sel,txt)=>{ const el=$(sel); if(el) el.textContent = txt; };
-
 function getAdminBtn(){ return document.getElementById('adminTab') || document.getElementById('adminTabBtn'); }
 
-// 3) App state
+/* ------------------------------------------------------------------ */
+/* App state                                                          */
+/* ------------------------------------------------------------------ */
 const me = { uid:null, email:null, fullName:null, role:'Other', practiceCode:null, isAdmin:false };
 let unsubTeam=null, unsubAct=null, presenceTimer=null;
 
-// 4) Visual helpers (BUSY=amber, DND=red)
+/* Visual helpers (BUSY=amber, DND=red to match CSS) */
 function initials(n){ if(!n) return '…'; return n.trim().split(/\s+/).slice(0,2).map(x=>x[0].toUpperCase()).join(''); }
 function dotCls(av){ return av==='busy' ? 'statusDot dot-busy' : av==='dnd' ? 'statusDot dot-dnd' : 'statusDot'; }
 function badgeCls(av){ return av==='busy' ? 'badge busy' : av==='dnd' ? 'badge dnd' : 'badge ok'; }
@@ -37,16 +41,16 @@ function setTab(t){
     document.querySelector(`.tabs [data-tab="${id}"]`)?.classList.toggle('active', id===t);
   });
 }
-window.showTab = (sectionId) => { // lets the header call showTab("tab-overview")
-  const id = (sectionId||'').replace('tab-','');
-  setTab(id || 'overview');
-};
+window.showTab = (sectionId) => { const id = (sectionId||'').replace('tab-',''); setTab(id || 'overview'); };
 
-// 5) Auth UI: email/password + optional anonymous join
+/* ------------------------------------------------------------------ */
+/* Auth UI: email/password + optional anonymous join                  */
+/* ------------------------------------------------------------------ */
 on('#signinBtn','click', async ()=>{
   const email = val('#email'); const pass = val('#pass');
   if(!email || !pass) return alert('Enter email and password');
-  try{ await auth.signInWithEmailAndPassword(email, pass); }catch(e){ alert(e.message); }
+  try{ await auth.signInWithEmailAndPassword(email, pass); }
+  catch(e){ alert(e.message); }
 });
 
 on('#signupToggle','click', ()=> $('#signupArea')?.classList.toggle('hidden'));
@@ -68,12 +72,13 @@ on('#signupBtn','click', async ()=>{
 
     // profile
     await db.collection('profiles').doc(u.uid).set({
-      email, fullName, role: inv.role || 'Other', practiceCode: inv.practiceCode, isAdmin:false
+      email, fullName, role: inv.role || 'Other', practiceCode: inv.practiceCode, isAdmin:false, createdAt: Date.now()
     }, { merge:true });
 
-    // practice + user record
+    // ensure practice doc exists
     await db.collection('practices').doc(inv.practiceCode).set({ name: inv.practiceCode, createdAt: Date.now() }, { merge:true });
 
+    // initial user record in practice
     await db.collection('practices').doc(inv.practiceCode).collection('users').doc(u.uid).set({
       practiceCode: inv.practiceCode, fullName, role: inv.role || 'Other',
       availability:'free', activity:'Active now', location:'', note:'',
@@ -81,66 +86,53 @@ on('#signupBtn','click', async ()=>{
     }, { merge:true });
 
     await invDoc.ref.set({ usedBy: u.uid, usedAt: Date.now() }, { merge:true });
-    alert('Account created');
+    alert('Account created. You can Sign In now.');
   }catch(e){ alert(e.message); }
 });
 
-// Your previous anonymous "Enter" flow (kept)
+// Practice "Enter" flow
 on('#enterBtn','click', async ()=>{
-  if(!auth.currentUser) await auth.signInAnonymously();
-  const u = auth.currentUser;
+  try{
+    if(!auth.currentUser) await auth.signInAnonymously();
+    const u = auth.currentUser;
 
-  const pr = val('#prCode').toUpperCase();
-  const fullName = val('#fullName');
-  const role = $('#role')?.value || 'Other';
-  const location = val('#location');
-  if(!pr || !fullName) return alert('Enter practice code and full name');
+    const pr = val('#prCode').toUpperCase();
+    const fullName = val('#fullName');
+    const role = $('#role')?.value || 'Other';
+    const location = val('#location');
+    if(!pr || !fullName) return alert('Enter practice code and full name');
 
-  me.uid = u.uid; me.email = u.email || ''; me.fullName = fullName; me.role=role; me.practiceCode = pr;
+    me.uid = u.uid; me.email = u.email || ''; me.fullName = fullName; me.role=role; me.practiceCode = pr;
 
-  await db.collection('profiles').doc(u.uid).set({
-    email: me.email, fullName, role, practiceCode: pr, isAdmin: me.isAdmin||false
-  }, { merge:true });
+    await db.collection('profiles').doc(u.uid).set({
+      email: me.email, fullName, role, practiceCode: pr, isAdmin: me.isAdmin||false, createdAt: Date.now()
+    }, { merge:true });
 
-  await db.collection('practices').doc(pr).set({ name: pr, createdAt: Date.now() }, { merge:true });
+    await db.collection('practices').doc(pr).set({ name: pr, createdAt: Date.now() }, { merge:true });
 
-  await db.collection('practices').doc(pr).collection('users').doc(u.uid).set({
-    practiceCode: pr, fullName, role, location,
-    availability:'free', activity:'Active now', note:'', lastActive: Date.now(), disabled:false
-  }, { merge:true });
+    await db.collection('practices').doc(pr).collection('users').doc(u.uid).set({
+      practiceCode: pr, fullName, role, location,
+      availability:'free', activity:'Active now', note:'', lastActive: Date.now(), disabled:false
+    }, { merge:true });
 
-  set('#chipPractice', pr); set('#chipMe', fullName);
-  // header chip
-  set('#chipName', fullName);
-  set('#chipRole', role);
-  const a = $('#userAvatar'); if(a) a.textContent = (fullName||'?').charAt(0).toUpperCase();
+    set('#chipPractice', pr); set('#chipMe', fullName);
+    set('#chipName', fullName); set('#chipRole', role);
+    const a = $('#userAvatar'); if(a) a.textContent = (fullName||'?').charAt(0).toUpperCase();
 
-  hide($('#auth')); show($('#tabs')); setTab('overview');
-  subscribeTeam(); subscribeActivity(); startPresence();
+    hide($('#auth')); show($('#tabs')); setTab('overview');
+    subscribeTeam(); subscribeActivity(); startPresence();
+  }catch(e){ alert(e.message); }
 });
 
-// 6) Save my status
-on('#saveBtn','click', async ()=>{
-  if(!me.uid || !me.practiceCode) return alert('Join a practice first');
-  const availability = $('#avail')?.value || 'free';
-  const activity     = $('#activity')?.value || 'Active now';
-  const location     = val('#meLocation');
-  const note         = val('#note');
-
-  await db.collection('practices').doc(me.practiceCode).collection('users').doc(me.uid).set({
-    practiceCode: me.practiceCode, fullName: me.fullName, role: me.role,
-    availability, activity, location, note, lastActive: Date.now()
-  }, { merge:true });
-
-  await db.collection('practices').doc(me.practiceCode).collection('activity').add({
-    byUid: me.uid, byName: me.fullName,
-    change: `${availability.toUpperCase()} • ${activity}${location?' @ '+location:''}${note?' — '+note:''}`,
-    ts: Date.now()
-  });
-  alert('Saved');
+/* LOGOUT */
+on('#logoutBtn','click', async ()=>{
+  try{ await auth.signOut(); location.reload(); }
+  catch(e){ alert(e.message); }
 });
 
-// 7) Presence (online < 60s)
+/* ------------------------------------------------------------------ */
+/* Presence (online < 60s)                                            */
+/* ------------------------------------------------------------------ */
 function startPresence(){
   if(presenceTimer) clearInterval(presenceTimer);
   presenceTimer = setInterval(async ()=>{
@@ -150,7 +142,9 @@ function startPresence(){
   }, 25000);
 }
 
-// 8) Live Overview + Activity
+/* ------------------------------------------------------------------ */
+/* Live Overview + Activity                                            */
+/* ------------------------------------------------------------------ */
 function subscribeTeam(){
   if(unsubTeam) unsubTeam();
   if(!me.practiceCode) return;
@@ -204,13 +198,15 @@ function subscribeActivity(){
   });
 }
 
-// 9) Tabs
+/* Tabs */
 $$('.tabs button[data-tab]').forEach(b=>{
   b.addEventListener('click', () => setTab(b.getAttribute('data-tab')));
 });
 
-// 10) Admin
-const OWNER_EMAIL = 'ronanbrennan56@gmail.com'; // first-time admin lock
+/* ------------------------------------------------------------------ */
+/* Admin                                                              */
+/* ------------------------------------------------------------------ */
+const OWNER_EMAIL = 'ronanbrennan56@gmail.com'; // change if needed
 
 on('#claimAdminBtn','click', async ()=>{
   const user = auth.currentUser;
@@ -222,7 +218,8 @@ on('#claimAdminBtn','click', async ()=>{
   if(!already.empty) return alert('An admin already exists.');
 
   await db.collection('admins').doc(user.uid).set({ email:user.email, createdAt: Date.now() });
-  await db.collection('profiles').doc(user.uid).set({ isAdmin:true }, { merge:true });
+  await db.collection('profiles').doc(user.uid).set({ isAdmin:true, role:'Admin' }, { merge:true });
+
   me.isAdmin = true;
   const btn = getAdminBtn(); if(btn) show(btn);
   alert('You are now the admin.');
@@ -281,32 +278,44 @@ on('#loadStaffBtn','click', async ()=>{
   });
 });
 
-// 11) Auth state listener — central brain
+/* ------------------------------------------------------------------ */
+/* Auto-provision profile on first sign-in + switch UI                */
+/* ------------------------------------------------------------------ */
 auth.onAuthStateChanged(async (user)=>{
   const adminBtn = getAdminBtn();
-  if(!user){
+
+  if (!user) {
     show($('#auth')); hide($('#tabs')); if(adminBtn) hide(adminBtn);
-    // reset header chip
     set('#chipName',''); set('#chipRole',''); const a=$('#userAvatar'); if(a) a.textContent='U';
     return;
   }
 
-  me.uid = user.uid; me.email = user.email || '';
+  // ensure profile exists (first login)
+  const uid = user.uid;
+  const email = (user.email || '').trim();
+  const profRef = db.collection('profiles').doc(uid);
+  const snap = await profRef.get();
 
-  const prof = await db.collection('profiles').doc(me.uid).get();
-  if(prof.exists){
-    const p = prof.data();
-    me.fullName = p.fullName || me.email;
-    me.practiceCode = p.practiceCode || null;
-    me.role = p.role || 'Other';
-    me.isAdmin = !!p.isAdmin;
-  }else{
-    me.fullName = me.email; me.isAdmin = false;
+  if (!snap.exists) {
+    const isOwner = email && email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+    const guessedName = email ? (email.split('@')[0] || 'User').replace(/[._-]+/g,' ').replace(/\b\w/g,c=>c.toUpperCase()) : 'Anonymous';
+    await profRef.set({
+      email, fullName: guessedName, role: isOwner ? 'Admin' : 'Other',
+      practiceCode: null, isAdmin: isOwner, createdAt: Date.now()
+    }, { merge:true });
   }
 
+  const prof = (await profRef.get()).data() || {};
+  me.uid = uid;
+  me.email = email;
+  me.fullName = prof.fullName || email || 'Anonymous';
+  me.role = prof.role || 'Other';
+  me.practiceCode = prof.practiceCode || null;
+  me.isAdmin = !!prof.isAdmin;
+
   // header chip
-  set('#chipName', me.fullName || '');
-  set('#chipRole', me.role || '');
+  set('#chipName', me.fullName);
+  set('#chipRole', me.role);
   const a = $('#userAvatar'); if(a) a.textContent = (me.fullName||'?').charAt(0).toUpperCase();
 
   if(adminBtn) (me.isAdmin ? show(adminBtn) : hide(adminBtn));
@@ -315,5 +324,8 @@ auth.onAuthStateChanged(async (user)=>{
     set('#chipPractice', me.practiceCode);
     hide($('#auth')); show($('#tabs')); setTab('overview');
     subscribeTeam(); subscribeActivity(); startPresence();
+  }else{
+    // still on join/auth screens (Admin can flip to Admin screen to create practice)
+    show($('#auth')); hide($('#tabs'));
   }
 });
