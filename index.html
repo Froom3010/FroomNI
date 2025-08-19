@@ -11,13 +11,13 @@
 </head>
 <body>
 
-  <!-- Header -->
   <header class="appHeader">
-    <div class="logoArea" onclick="showTab('tab-overview')">
-      <!-- Use logo.svg (or change the src to your file) -->
-      <img src="logo.svg" alt="Froom logo" class="logo" />
-      <span class="logoText">Froom</span>
-    </div>
+  <div class="logoArea" onclick="showTab('tab-overview')">
+    <img src="logo.svg" alt="Froom logo" class="logo" />
+    <span class="logoText">Froom</span>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:8px;">
     <div class="userChip" id="userChip">
       <div class="avatar" id="userAvatar">U</div>
       <div class="userInfo">
@@ -25,7 +25,11 @@
         <div id="chipRole" class="muted small"></div>
       </div>
     </div>
-  </header>
+
+    <!-- NEW: Logout -->
+    <button id="logoutBtn" type="button" class="ghost">Logout</button>
+  </div>
+</header>
 
   <!-- Page container -->
   <div class="page">
