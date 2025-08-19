@@ -66,7 +66,14 @@ input,select,textarea,button{
   border:1px solid var(--border);background:#0c101c;color:var(--text)
 }
 button{cursor:pointer;background:linear-gradient(180deg,#18243a,#121b2e);min-height:44px;font-weight:600}
+
+/* Buttons */
 button.primary{background:linear-gradient(180deg,var(--brand2),#0dbb79);color:#0a111a;border:none}
+button.ghost{
+  background:#111728;
+  border:1px solid var(--border);
+  color:var(--text);
+}
 
 /* Tabs */
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
@@ -90,9 +97,9 @@ button.primary{background:linear-gradient(180deg,var(--brand2),#0dbb79);color:#0
 /* Status visuals (BUSY amber, DND red) */
 .statusDot{width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
 .dot-busy{background:var(--busy);box-shadow:0 0 10px var(--busy)}
-.dot-dnd{ background:var(--dnd); box-shadow:0 0 10px var(--dnd) }
+.dot-dnd {background:var(--dnd); box-shadow:0 0 10px var(--dnd)}
 
 .badge{padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);color:var(--muted)}
-.badge.ok{  background:rgba(52,199,89,.12); color:#b3f7c9; border-color:rgba(52,199,89,.25) }
-.badge.busy{background:rgba(255,191,63,.12); color:#ffe2b3; border-color:rgba(255,191,63,.25)}
-.badge.dnd{ background:rgba(255,77,79,.12);  color:#ffc1c1; border-color:rgba(255,77,79,.25) }
+.badge.ok  { background:rgba(52,199,89,.12);  color:#b3f7c9;  border-color:rgba(52,199,89,.25) }
+.badge.busy{ background:rgba(255,191,63,.12); color:#ffe2b3; border-color:rgba(255,191,63,.25) }
+.badge.dnd { background:rgba(255,77,79,.12);  color:#ffc1c1; border-color:rgba(255,77,79,.25) }
