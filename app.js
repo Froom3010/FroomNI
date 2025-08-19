@@ -129,6 +129,26 @@ on('#logoutBtn','click', async ()=>{
   try{ await auth.signOut(); location.reload(); }
   catch(e){ alert(e.message); }
 });
+// Global, bullet-proof logout (works even if other bindings don't)
+window.logout = async function () {
+  try {
+    await auth.signOut();
+    // Optional: clear any persisted auth (helps on some browsers)
+    try {
+      sessionStorage.clear();
+      Object.keys(localStorage)
+        .filter(k => k.startsWith('firebase:'))
+        .forEach(k => localStorage.removeItem(k));
+    } catch {}
+    // Reload to return to landing screen
+    location.href = location.pathname; // stays on /FroomNI/
+  } catch (e) {
+    alert(e.message);
+  }
+};
+
+// Also keep the regular listener (harmless if both exist)
+on('#logoutBtn', 'click', () => window.logout());
 
 /* ------------------------------------------------------------------ */
 /* Presence (online < 60s)                                            */
